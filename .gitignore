@@ -1,0 +1,39 @@
+# Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+
+# Python runtime & environments
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Client Files & Private Accounting Spreadsheets
+*.xls
+*.xlsx
+*.csv
+
+# Audit Screenshots & Logs
+audit_logs/
+*.log
+*.png
+*.jpg
+*.jpeg
+
+# Tooling & Editor Directories
+.superpowers/
+.idea/
+.DS_Store
+Thumbs.db
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
