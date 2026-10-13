@@ -1,0 +1,10 @@
+def test_environment_packages():
+    import playwright
+    import fastapi
+    import uvicorn
+    import xlrd
+    import openpyxl
+    import requests
+    import dotenv
+    import pytest
+    assert True
