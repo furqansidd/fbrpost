@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FBR IRIS 2.0 | Automated Tax Filing Suite</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      /* Canvas & Surfaces */
+      --bg-canvas: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-surface-subtle: #f1f5f9;
+      --bg-input: #ffffff;
+      --bg-input-hover: #f8fafc;
+
+      /* Borders */
+      --border-light: #e2e8f0;
+      --border-input: #cbd5e1;
+      --border-focus: #2563eb;
+
+      /* Brand Accents */
+      --primary: #1e40af;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+      --primary-border: #bfdbfe;
+
+      /* Federal Forest / Safety */
+      --forest-bg: #ecfdf5;
+      --forest-text: #065f46;
+      --forest-border: #a7f3d0;
+      --forest-emerald: #059669;
+
+      /* Status Colors */
+      --amber-bg: #fffbeb;
+      --amber-text: #92400e;
+      --amber-border: #fde68a;
+
+      --rose-bg: #fef2f2;
+      --rose-text: #991b1b;
+      --rose-border: #fecaca;
+
+      /* Typography */
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --text-disabled: #94a3b8;
+
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', "SFMono-Regular", Consolas, monospace;
+
+      /* Elevation */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+      --shadow-window: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-canvas) !important;
+      color: var(--text-primary) !important;
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Header */
+    .app-header {
+      height: 64px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      background: #1e3a8a;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      color: var(--text-primary);
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .header-badges {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+    }
+
+    .badge-safety {
+      background: var(--forest-bg);
+      color: var(--forest-text);
+      border-color: var(--forest-border);
+    }
+
+    .badge-env {
+      background: var(--bg-surface-subtle);
+      color: var(--text-secondary);
+      border-color: var(--border-light);
+    }
+
+    .btn-reset {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-reset:hover {
+      background: var(--bg-surface-subtle);
+      color: var(--text-primary);
+      border-color: var(--border-input);
+    }
+
+    /* Layout */
+    .app-container {
+      max-width: 1560px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 32px;
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      gap: 28px;
+      flex: 1;
+    }
+
+    /* Card Common */
+    .card {
+      background: var(--bg-surface) !important;
+      border: 1px solid var(--border-light) !important;
+      border-radius: 10px;
+      padding: 22px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .form-label-hint {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      height: 42px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-input);
+      border-radius: 7px;
+      padding: 0 14px;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .input-wrapper .form-input {
+      padding-right: 44px;
+    }
+
+    .form-input::placeholder {
+      color: var(--text-disabled);
+    }
+
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .input-action-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+    }
+
+    .input-action-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-surface-subtle);
+    }
+
+    /* Dropzone */
+    .dropzone {
+      border: 1.5px dashed var(--border-input);
+      border-radius: 8px;
+      padding: 28px 18px;
+      text-align: center;
+      background: #fafcff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .dropzone:hover {
+      border-color: var(--border-focus);
+      background: #f0f7ff;
+    }
+
+    .dropzone-icon {
+      margin-bottom: 10px;
+      color: #3b82f6;
+      display: flex;
+      justify-content: center;
+    }
+
+    .dropzone-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+
+    .dropzone-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Parsed Metrics */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .metric-box {
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .metric-val {
+      font-size: 14px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .reconciled-banner {
+      margin-top: 12px;
+      background: var(--forest-bg);
+      border: 1px solid var(--forest-border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .reconciled-banner.error {
+      background: var(--rose-bg);
+      border-color: var(--rose-border);
+    }
+
+    .reconciled-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--forest-text);
+    }
+
+    .reconciled-banner.error .reconciled-text {
+      color: var(--rose-text);
+    }
+
+    /* Execution Controls */
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 0 16px 0;
+    }
+
+    .setting-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .setting-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .btn-primary {
+      width: 100%;
+      height: 44px;
+      background: #1e3a8a;
+      color: #ffffff;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: 0.1px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .action-notice {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+
+    /* Right Column */
+    .live-column {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    /* Viewport Window */
+    .viewport-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: var(--shadow-window);
+    }
+
+    .viewport-header {
+      height: 42px;
+      background: var(--bg-surface-subtle);
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+    }
+
+    .window-dots {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .window-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #cbd5e1;
+    }
+
+    .viewport-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+    }
+
+    .viewport-status-badge {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .viewport-canvas {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .viewport-canvas img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* Minimal Viewport Placeholder */
+    .viewport-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 6px;
+      padding: 40px;
+    }
+
+    /* Pipeline Tracker */
+    .pipeline-steps {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .step-card {
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 10px 8px;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .step-card.active {
+      border-color: #2563eb;
+      background: #eff6ff;
+    }
+
+    .step-card.done {
+      border-color: var(--forest-border);
+      background: var(--forest-bg);
+    }
+
+    .step-num {
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .step-card.active .step-num {
+      color: #1e40af;
+    }
+
+    .step-card.done .step-num {
+      color: var(--forest-text);
+    }
+
+    .step-name {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    /* Console Audit Trail */
+    .console-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-light);
+      border-radius: 7px;
+      padding: 14px 16px;
+      height: 200px;
+      overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .log-entry {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+
+    .log-time {
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .log-msg {
+      color: var(--text-primary);
+    }
+
+    .log-msg.highlight {
+      color: #1d4ed8;
+      font-weight: 500;
+    }
+
+    .log-msg.success {
+      color: #047857;
+      font-weight: 500;
+    }
+
+    .log-msg.error {
+      color: #b91c1c;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Executive Header -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon">IRIS</div>
+      <div>
+        <div class="brand-title">Federal Board of Revenue | IRIS 2.0 Automation Suite</div>
+        <div class="brand-subtitle">Enterprise Return & Wealth Statement Draft Engine</div>
+      </div>
+    </div>
+    <div class="header-badges">
+      <button class="btn-reset" id="resetBtn" title="Reset all form fields">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+        Reset
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="app-container">
+
+    <!-- Left Column: Setup & Credentials -->
+    <div class="config-column">
+
+      <!-- Credentials Card -->
+      <div class="card" style="margin-bottom: 20px;">
+        <div class="card-title">
+          <span>1. Client Authentication</span>
+          <span style="font-size: 11px; color: #64748b; font-weight: 500;">FBR IRIS 2.0</span>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="cnicInput">
+            <span>Registration No / CNIC</span>
+            <span class="form-label-hint">13 digits</span>
+          </label>
+          <div class="input-wrapper">
+            <input type="text" id="cnicInput" class="form-input" placeholder="e.g. 42101-1234567-1" autocomplete="off" spellcheck="false">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="passInput">
+            <span>IRIS Portal Password</span>
+            <span class="form-label-hint">Confidential</span>
+          </label>
+          <div class="input-wrapper">
+            <input type="password" id="passInput" class="form-input" placeholder="Enter password" autocomplete="new-password">
+            <button type="button" class="input-action-btn" id="togglePasswordBtn" aria-label="Toggle password visibility">
+              <svg id="eyeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label" for="taxYearSelect">
+            <span>Target Tax Year</span>
+          </label>
+          <select id="taxYearSelect" class="form-select">
+            <option value="2026" selected>Tax Year 2026 (Active Period)</option>
+            <option value="2025">Tax Year 2025</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Excel Data Card -->
+      <div class="card" style="margin-bottom: 20px;">
+        <div class="card-title">
+          <span>2. Tax Computation Data</span>
+          <span style="font-size: 11px; color: #64748b; font-weight: 500;">XLS / XLSX</span>
+        </div>
+
+        <input type="file" id="filePicker" style="display: none;" accept=".xls,.xlsx">
+        
+        <div class="dropzone" id="dropzone">
+          <div class="dropzone-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
+          </div>
+          <div class="dropzone-title" id="fileStatusText">Upload Tax Computation Workbook</div>
+          <div class="dropzone-desc">Drag & drop client computation (.xlsx, .xls) or click to browse</div>
+        </div>
+
+        <!-- Metrics Verification Panel -->
+        <div id="metricsPanel" style="display: none;">
+          <div class="metrics-grid">
+            <div class="metric-box">
+              <div class="metric-label">Gross Sales (3029)</div>
+              <div class="metric-val" id="metricSales">PKR 0</div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-label">Gross Profit (3100)</div>
+              <div class="metric-val" id="metricGP">PKR 0</div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-label">Net Business Income</div>
+              <div class="metric-val" id="metricIncome">PKR 0</div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-label">Household Expenses</div>
+              <div class="metric-val" id="metricExpenses">PKR 0</div>
+            </div>
+          </div>
+
+          <div class="reconciled-banner" id="reconciledBanner">
+            <span class="reconciled-text" id="reconciledText">✓ WEALTH RECONCILED: DIFFERENCE PKR 0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Execution Trigger Card -->
+      <div class="card">
+        <div class="card-title">3. Execution Protocol</div>
+        
+        <div class="setting-row">
+          <div>
+            <div class="setting-title">Interactive Browser Session</div>
+            <div class="setting-desc">Display active Chromium session window on desktop</div>
+          </div>
+          <input type="checkbox" id="headedToggle" checked style="accent-color: #1e3a8a; width: 16px; height: 16px; cursor: pointer;">
+        </div>
+
+        <button id="startBtn" class="btn-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          Execute Automated Return (Save as Draft)
+        </button>
+
+        <div class="action-notice">
+          Safety Notice: Return is saved strictly as a draft. Final submission and 4-digit PIN verification are never performed automatically.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Column: Visual Screencast & Live Timeline -->
+    <div class="live-column">
+
+      <!-- Viewport Card -->
+      <div class="viewport-card">
+        <div class="viewport-header">
+          <div class="window-dots">
+            <div class="window-dot"></div>
+            <div class="window-dot"></div>
+            <div class="window-dot"></div>
+          </div>
+          <div class="viewport-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+            PORTAL LIVE VIEWPORT
+          </div>
+          <div class="viewport-status-badge" id="currentStepLabel">
+            STANDBY
+          </div>
+        </div>
+        
+        <div class="viewport-canvas" id="viewportCanvas">
+          <!-- Minimal Viewport Placeholder -->
+          <div class="viewport-placeholder" id="viewportPlaceholder">
+            <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+            <div style="font-size: 13px; font-weight: 500; color: #64748b; margin-top: 4px;">Live Portal Session Standby</div>
+            <div style="font-size: 11.5px; color: #94a3b8;">Stream will automatically display here during execution</div>
+          </div>
+
+          <!-- Live Portal Screenshot Stream (Displayed during execution) -->
+          <img id="liveScreenImg" style="display: none;" alt="FBR Live Session Stream">
+        </div>
+      </div>
+
+      <!-- Pipeline Tracker -->
+      <div class="card">
+        <div class="card-title">Filing Execution Pipeline</div>
+        <div class="pipeline-steps">
+          <div class="step-card" id="step-INGEST">
+            <div class="step-num">01</div>
+            <div class="step-name">Excel Ingest</div>
+          </div>
+          <div class="step-card" id="step-CAPTCHA">
+            <div class="step-num">02</div>
+            <div class="step-name">IRIS Login</div>
+          </div>
+          <div class="step-card" id="step-DRAFT">
+            <div class="step-num">03</div>
+            <div class="step-name">Draft Setup</div>
+          </div>
+          <div class="step-card" id="step-MFG">
+            <div class="step-num">04</div>
+            <div class="step-name">114 Mfg/Trade</div>
+          </div>
+          <div class="step-card" id="step-EXP">
+            <div class="step-num">05</div>
+            <div class="step-name">Admin Exp & BS</div>
+          </div>
+          <div class="step-card" id="step-WEALTH">
+            <div class="step-num">06</div>
+            <div class="step-name">Wealth 116</div>
+          </div>
+          <div class="step-card" id="step-SAVE">
+            <div class="step-num">07</div>
+            <div class="step-name">Save Draft</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-Time Audit Console -->
+      <div class="card" style="flex: 1; display: flex; flex-direction: column;">
+        <div class="card-title">
+          <span>Execution Console & Audit Trail</span>
+          <span style="font-size: 11px; color: #64748b; font-family: var(--font-mono);">ACTIVITY STREAM</span>
+        </div>
+        <div class="console-box" id="consoleBox">
+          <div class="log-entry">
+            <span class="log-time">[System]</span>
+            <span class="log-msg">Agent initialized. Ready to process client return.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    let activeTaxData = null;
+    let ws = null;
+    let isSessionRunning = false;
+
+    // WebSocket Management
+    function connectWebSocket() {
+      const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+      ws = new WebSocket(`${protocol}//${window.location.host}/ws/live`);
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          handleLiveEvent(data);
+        } catch (e) {
+          console.error("Malformed websocket payload:", e);
+        }
+      };
+
+      ws.onclose = () => {
+        setTimeout(connectWebSocket, 2000);
+      };
+    }
+    connectWebSocket();
+
+    // Audit Console Logger
+    function logToConsole(message, type = "") {
+      const consoleBox = document.getElementById("consoleBox");
+      const entry = document.createElement("div");
+      entry.className = "log-entry";
+      const now = new Date().toLocaleTimeString();
+      entry.innerHTML = `<span class="log-time">[${now}]</span><span class="log-msg ${type}">${message}</span>`;
+      consoleBox.appendChild(entry);
+      consoleBox.scrollTop = consoleBox.scrollHeight;
+    }
+
+    // Live Event Dispatcher
+    function handleLiveEvent(data) {
+      logToConsole(data.message, data.step === "ERROR" ? "error" : (data.step === "COMPLETE" || data.step === "SUCCESS" ? "success" : "highlight"));
+
+      // Update Live Image
+      if (data.screenshot) {
+        const img = document.getElementById("liveScreenImg");
+        const placeholder = document.getElementById("viewportPlaceholder");
+        img.src = `data:image/jpeg;base64,${data.screenshot}`;
+        img.style.display = "block";
+        if (placeholder) placeholder.style.display = "none";
+      }
+
+      // Update Step label
+      if (data.step) {
+        document.getElementById("currentStepLabel").innerText = data.step;
+      }
+
+      // Update Step Pipeline tracker
+      const stepMap = {
+        "INIT": "step-INGEST",
+        "LOGIN_INIT": "step-CAPTCHA",
+        "CAPTCHA_SOLVE": "step-CAPTCHA",
+        "LOGIN_SUCCESS": "step-CAPTCHA",
+        "DRAFT_DETECTION": "step-DRAFT",
+        "DRAFT_FOUND": "step-DRAFT",
+        "FORM_114_MFG": "step-MFG",
+        "FORM_114_EXP": "step-EXP",
+        "FORM_114_BS": "step-EXP",
+        "FORM_116_WEALTH": "step-WEALTH",
+        "RECONCILIATION": "step-WEALTH",
+        "CALCULATE_VERIFIED": "step-WEALTH",
+        "SAVE_DRAFT": "step-SAVE",
+        "SUCCESS": "step-SAVE",
+        "COMPLETE": "step-SAVE"
+      };
+
+      if (stepMap[data.step]) {
+        const elem = document.getElementById(stepMap[data.step]);
+        if (elem) {
+          elem.classList.add(data.step === "COMPLETE" || data.step === "SUCCESS" ? "done" : "active");
+        }
+      }
+
+      // Re-enable Start Button on terminal events
+      if (data.step === "ERROR" || data.step === "COMPLETE" || data.step === "SUCCESS" || data.step === "ABORTED") {
+        setExecutionIdle();
+      }
+    }
+
+    function setExecutionIdle() {
+      isSessionRunning = false;
+      const startBtn = document.getElementById("startBtn");
+      if (startBtn) {
+        startBtn.disabled = false;
+        startBtn.style.background = "";
+        startBtn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Execute Automated Return (Save as Draft)`;
+      }
+    }
+
+    function setExecutionRunning() {
+      isSessionRunning = true;
+      const startBtn = document.getElementById("startBtn");
+      if (startBtn) {
+        startBtn.disabled = false;
+        startBtn.style.background = "#dc2626";
+        startBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"></rect></svg> Stop / Cancel Active Session`;
+      }
+    }
+
+    // Password Visibility Toggle
+    const togglePassBtn = document.getElementById("togglePasswordBtn");
+    const passInput = document.getElementById("passInput");
+    togglePassBtn.addEventListener("click", () => {
+      const isPass = passInput.type === "password";
+      passInput.type = isPass ? "text" : "password";
+      togglePassBtn.innerHTML = isPass 
+        ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`
+        : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+    });
+
+    // Reset Button
+    document.getElementById("resetBtn").addEventListener("click", async () => {
+      // 1. Immediately abort any active browser worker on server
+      try {
+        await fetch("/api/stop-posting", { method: "POST" });
+      } catch (_) {}
+
+      // 2. Clear frontend inputs
+      document.getElementById("cnicInput").value = "";
+      document.getElementById("passInput").value = "";
+      activeTaxData = null;
+      document.getElementById("metricsPanel").style.display = "none";
+      document.getElementById("fileStatusText").innerText = "Upload Tax Computation Workbook";
+      
+      const img = document.getElementById("liveScreenImg");
+      const placeholder = document.getElementById("viewportPlaceholder");
+      img.style.display = "none";
+      img.src = "";
+      if (placeholder) placeholder.style.display = "flex";
+
+      setExecutionIdle();
+      document.getElementById("currentStepLabel").innerText = "STANDBY";
+      document.querySelectorAll(".step-card").forEach(c => c.className = "step-card");
+      logToConsole("Session stopped and form reset. Ready for new client.", "highlight");
+    });
+
+    // Drag & Drop File Handling
+    const dropzone = document.getElementById("dropzone");
+    const filePicker = document.getElementById("filePicker");
+
+    dropzone.addEventListener("click", () => filePicker.click());
+    
+    dropzone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropzone.style.borderColor = "#2563eb";
+      dropzone.style.background = "#eff6ff";
+    });
+
+    dropzone.addEventListener("dragleave", () => {
+      dropzone.style.borderColor = "#cbd5e1";
+      dropzone.style.background = "#fafcff";
+    });
+
+    dropzone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropzone.style.borderColor = "#cbd5e1";
+      dropzone.style.background = "#fafcff";
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        uploadAndParse(e.dataTransfer.files[0]);
+      }
+    });
+
+    filePicker.addEventListener("change", (e) => {
+      if (e.target.files.length > 0) uploadAndParse(e.target.files[0]);
+    });
+
+    async function uploadAndParse(file) {
+      document.getElementById("fileStatusText").innerText = `Parsing ${file.name}...`;
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("tax_year", document.getElementById("taxYearSelect").value);
+
+      try {
+        const res = await fetch("/api/parse-excel", { method: "POST", body: formData });
+        const json = await res.json();
+        if (json.status === "success") {
+          activeTaxData = json.data;
+          renderMetrics(json.data, file.name);
+          logToConsole(`Loaded & validated file: ${file.name} (Diff: PKR ${json.data.wealth.difference})`, "success");
+        } else {
+          alert(`Parsing error: ${json.detail}`);
+          document.getElementById("fileStatusText").innerText = "Upload Tax Computation Workbook";
+        }
+      } catch (err) {
+        alert("Failed to parse file: " + err);
+        document.getElementById("fileStatusText").innerText = "Upload Tax Computation Workbook";
+      }
+    }
+
+    function renderMetrics(data, filename) {
+      document.getElementById("fileStatusText").innerText = `✓ Loaded: ${filename}`;
+      document.getElementById("metricsPanel").style.display = "block";
+      document.getElementById("step-INGEST").classList.add("done");
+
+      document.getElementById("metricSales").innerText = "PKR " + Number(data.income["3029"]).toLocaleString();
+      document.getElementById("metricGP").innerText = "PKR " + Number(data.income.gross_profit).toLocaleString();
+      document.getElementById("metricIncome").innerText = "PKR " + Number(data.income.net_income).toLocaleString();
+      document.getElementById("metricExpenses").innerText = "PKR " + Number(data.wealth.personal_expenses).toLocaleString();
+
+      const banner = document.getElementById("reconciledBanner");
+      const text = document.getElementById("reconciledText");
+      if (data.wealth.reconciled) {
+        banner.className = "reconciled-banner";
+        text.innerText = `✓ WEALTH RECONCILED: DIFFERENCE PKR ${data.wealth.difference.toFixed(2)}`;
+      } else {
+        banner.className = "reconciled-banner error";
+        text.innerText = `⚠ WEALTH UNBALANCED: DIFFERENCE PKR ${data.wealth.difference.toFixed(2)}`;
+      }
+    }
+
+    // Start or Stop Posting Execution
+    document.getElementById("startBtn").addEventListener("click", async () => {
+      // If already running, clicking acts as Stop / Cancel
+      if (isSessionRunning) {
+        try {
+          await fetch("/api/stop-posting", { method: "POST" });
+        } catch (_) {}
+        setExecutionIdle();
+        logToConsole("Session stopped by user.", "highlight");
+        return;
+      }
+
+      const cnic = document.getElementById("cnicInput").value.trim();
+      const password = document.getElementById("passInput").value.trim();
+      const taxYear = parseInt(document.getElementById("taxYearSelect").value);
+      const headless = !document.getElementById("headedToggle").checked;
+
+      if (!cnic || !password) {
+        alert("Please enter both the CNIC and the client's IRIS Password.");
+        return;
+      }
+
+      if (!activeTaxData) {
+        alert("Please upload the client's Excel tax computation workbook (.xlsx or .xls) before executing.");
+        return;
+      }
+
+      setExecutionRunning();
+
+      try {
+        const res = await fetch("/api/start-posting", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            cnic: cnic,
+            password: password,
+            tax_year: taxYear,
+            headless: headless,
+            parsed_data: activeTaxData
+          })
+        });
+
+        if (!res.ok) {
+          const txt = await res.text();
+          let msg = txt;
+          try {
+            const j = JSON.parse(txt);
+            msg = j.detail || j.message || txt;
+          } catch (_) {}
+          alert("Error launching agent: " + msg);
+          setExecutionIdle();
+          return;
+        }
+
+        const data = await res.json();
+        logToConsole(data.message, "highlight");
+      } catch (err) {
+        alert("Error launching agent: " + err);
+        setExecutionIdle();
+      }
+    });
+  </script>
+</body>
+</html>
